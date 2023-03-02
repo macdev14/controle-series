@@ -29,4 +29,6 @@ Route::post('/series/criar', [SeriesController::class, 'store'] )->name('series.
 
 Route::get('/series/{serie}/atualizar', [SeriesController::class, 'edit'] )->name('series.editar');
 
-Route::post('/series/{serie}/atualizar', [SeriesController::class, 'update'] )->name('series.atualizar');
+Route::put('/series/{serie}/atualizar', [SeriesController::class, 'update'] )->name('series.atualizar');
+
+Route::delete('/series/{serie}/remover', [SeriesController::class, 'delete'] )->name('series.remover');

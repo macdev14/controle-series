@@ -5,10 +5,12 @@
     <ul class="list-group">
         @foreach($series as $serie)
         <li class="list-group-item d-flex justify-content-between align-items-center">
-     {{ $serie->nome }}
+          
+    <span> {{ $serie->id }} </span>
+     
      <a class="btn btn-primary" href="{{ route('series.editar', $serie->id) }}">
            
-        <i class="fas fa-edit"></i> 
+        <i class="fas fa-external-link-alt"></i> 
 </a>
        <form method="POST" action="{{ route('series.remover', $serie->id) }}" onsubmit="return confirm('Tem certeza?')"> 
         @csrf

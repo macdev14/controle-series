@@ -9,7 +9,7 @@ class Serie extends Model
 {
     protected $fillable = ['nome'];
     public $timestamps = false;
-    public $nome;
+    //public $nome;
     public $temporadas;
     use HasFactory;
 

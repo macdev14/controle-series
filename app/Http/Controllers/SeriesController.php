@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Services\{CriadorDeSerie, RemovedorDeSerie};
 use App\Http\Requests\SeriesFormRequest;
 use Illuminate\Support\Facades\Session;
 use App\Models\Serie;
@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class SeriesController extends Controller
 {
+
+
+
     //
     public function listarSeries(Request $request){
 
@@ -28,22 +31,12 @@ class SeriesController extends Controller
         return view('series.create');
     }
 
-    public function store(SeriesFormRequest $request)
+    public function store(SeriesFormRequest $request, criadorDeSerie $criadorDeSerie)
     {
         
         $formFields = $request->validated();
-        $serie = Serie::create(['nome'=> $formFields["nome"] ]);
-        $qtd_temp = intval($formFields["qtd_temporadas"]);
-        $ep_por_temporada = intval($formFields["ep_por_temporada"]);
-        // return var_dump($formFields["qtd_temporadas"]);
-        for($i=1; $i<=$qtd_temp; $i++){
-            $temporada = $serie->temporadas()->create(['numero'=>$i]);
-                for ($j=1; $j<=$ep_por_temporada; $j++){
-                   $episodio = $temporada->episodios()->create(['numero'=>$j]);
-                }
-                
-            
-        }
+        
+        $serie = $criadorDeSerie->criarSerie($formFields);
 
         Session::flash('message',"Serie {$serie->id} e suas temporadas e episódio criados com sucesso!");
         return redirect()->route('series.listar');
@@ -52,9 +45,9 @@ class SeriesController extends Controller
     public function update(Serie $serie, SeriesFormRequest $request)
     {
         $formFields= $request->validated();
-         
+         dd($formFields);
 
-        $serie->update($formFields);
+        var_dump($serie->update($formFields));
         Session::flash('message','Serie alterada com sucesso!');
         return redirect()->route('series.listar');
     }
@@ -64,9 +57,19 @@ class SeriesController extends Controller
     }
 
 
-    public function delete(Serie $serie){
-        $serie->delete();
-        Session::flash('message','Serie deletada com sucesso!');
+    public function delete(Serie $serie, RemovedorDeSerie $removedorDeSerie){
+        
+        //$serie->delete();
+        $nomeSerie = $removedorDeSerie->removerSerie($serie);
+        Session::flash('message', "Série {$nomeSerie} deletada com sucesso!");
         return redirect()->route('series.listar');
     }
+
+    public function editaNome(Request $request, Serie $serie)
+{
+    $novoNome = $request->nome;
+    // $serie = Serie::find($request->id);
+    $serie->nome = $novoNome;
+    $serie->save();
+}
 }
